@@ -1,6 +1,15 @@
 import jsonPlaceholder from "../apis/jsonPlaceholder";
 import _ from "lodash";
 
+export const fetchPostsAndUsers = () => async (dispatch, getState) => {
+  // console.log('About to fetch posts');
+  await dispatch(fetchPosts());
+  // console.log(getState().posts);
+  const userIds = _.uniq(_.map(getState().posts, 'userId'));
+  console.log(userIds); 
+}
+
+
 export const fetchPosts = () => async (dispatch) => {
   const response = await jsonPlaceholder.get("/posts");
   //  Typical error, dispatching the entire response
