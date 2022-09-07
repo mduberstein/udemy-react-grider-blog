@@ -5,16 +5,24 @@ export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   // console.log('About to fetch posts');
   await dispatch(fetchPosts());
   // console.log(getState().posts);
-  const userIds = _.uniq(_.map(getState().posts, 'userId'));
-  // console.log(userIds); 
-  // no need for await before dispatch as we don't need to wait for the responses with User data
-  // since we do not do anything with them in this method
-  // AND forEach doesn't work with async, so if we needed to wait, we might have to use
-  // Promise.all(userIds.forEach...) - Grider didn't remember
-  userIds.forEach(id => dispatch(fetchUser(id))); 
+  
+  // ALT 2
+  // const userIds = _.uniq(_.map(getState().posts, 'userId'));
+  // // console.log(userIds); 
+  // // no need for await before dispatch as we don't need to wait for the responses with User data
+  // // since we do not do anything with them in this method
+  // // AND forEach doesn't work with async, so if we needed to wait, we might have to use
+  // // Promise.all(userIds.forEach...) - Grider didn't remember
+  // userIds.forEach(id => dispatch(fetchUser(id))); 
+
+  // ALT 3 - chain from lodash, execution is deferred until .value() is called
+  // first argument of methods being chain is implicitly the return value of the previous method in the chain
+  _.chain(getState().posts)
+    .map('userId')
+    .uniq()
+    .forEach(id => dispatch(fetchUser(id)))
+    .value();
 }
-
-
 
 export const fetchPosts = () => async (dispatch) => {
   const response = await jsonPlaceholder.get("/posts");
