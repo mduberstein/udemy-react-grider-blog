@@ -8,11 +8,10 @@ export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   const userIds = _.uniq(_.map(getState().posts, 'userId'));
   // console.log(userIds); 
   // no need for await before dispatch as we don't need to wait for the responses with User data
-  // since we do not do anything with them here
+  // since we do not do anything with them in this method
   // AND forEach doesn't work with async, so if we needed to wait, we might have to use
   // Promise.all(userIds.forEach...) - Grider didn't remember
   userIds.forEach(id => dispatch(fetchUser(id))); 
-
 }
 
 
